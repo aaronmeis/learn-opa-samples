@@ -487,6 +487,40 @@
                     </div>
                 </div>
             </div>
+
+            <div style="margin-top: 3rem;">
+                <h2 style="font-family: 'Outfit', sans-serif; margin-bottom: 1.5rem; color: var(--accent);">Deployment
+                    Layout</h2>
+                <div class="detail-grid">
+                    <div>
+                        <h3>user-service/Dockerfile</h3>
+                        <div class="code-block">
+                            FROM node:18-alpine
+                            WORKDIR /app
+                            COPY package*.json ./
+                            RUN npm install
+                            COPY . .
+                            CMD ["node", "index.js"]
+                        </div>
+                    </div>
+                    <div>
+                        <h3>docker-compose.yml</h3>
+                        <div class="code-block" style="font-size: 0.8rem;">
+                            services:
+                            user-service:
+                            build: ./user-service
+                            depends_on: [opa]
+                            opa:
+                            image: openpolicyagent/opa:latest
+                            volumes: ['./opa-config:/config']
+                            command: ["run", "--server", "--config-file=/config/config.yaml"]
+                            bundle-server:
+                            image: nginx:alpine
+                            volumes: ['./bundle-server/www:/usr/share/nginx/html']
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
     </div>
 
