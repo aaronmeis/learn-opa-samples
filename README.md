@@ -2,6 +2,8 @@
 
 A collection of sample projects demonstrating Open Policy Agent (OPA) integration for Role-Based Access Control (RBAC) across different frameworks and architectures.
 
+![Overview](overview.png)
+
 ## Project Overviews
 
 | Folder | Tech Stack | OPA Architecture | Features |
