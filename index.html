@@ -315,6 +315,39 @@
                     </div>
                 </div>
             </div>
+
+            <div style="margin-top: 3rem;">
+                <h2 style="font-family: 'Outfit', sans-serif; margin-bottom: 1.5rem; color: var(--accent);">Deployment
+                    Layout</h2>
+                <div class="detail-grid">
+                    <div>
+                        <h3>api/Dockerfile</h3>
+                        <div class="code-block">
+                            FROM python:3.11-slim
+                            WORKDIR /app
+                            COPY requirements.txt .
+                            RUN pip install --no-cache-dir -r requirements.txt
+                            COPY . .
+                            CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+                        </div>
+                    </div>
+                    <div>
+                        <h3>docker-compose.yml</h3>
+                        <div class="code-block" style="font-size: 0.8rem;">
+                            services:
+                            api:
+                            build: ./api
+                            environment:
+                            - OPA_URL=http://opa:8181/v1/data/rbac/allow
+                            depends_on: [opa]
+                            opa:
+                            image: openpolicyagent/opa:latest
+                            volumes: ['./opa:/policies']
+                            command: ["run", "--server", "/policies/rbac.rego"]
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Simple Detail View -->
@@ -366,6 +399,38 @@
                         # Decide
                         if not check_opa(data):
                         return abort(403)
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 3rem;">
+                <h2 style="font-family: 'Outfit', sans-serif; margin-bottom: 1.5rem; color: var(--accent);">Deployment
+                    Layout</h2>
+                <div class="detail-grid">
+                    <div>
+                        <h3>Dockerfile</h3>
+                        <div class="code-block">
+                            FROM python:3.11-slim
+                            WORKDIR /app
+                            RUN pip install flask requests
+                            COPY . .
+                            CMD ["python", "app.py"]
+                        </div>
+                    </div>
+                    <div>
+                        <h3>docker-compose.yml</h3>
+                        <div class="code-block" style="font-size: 0.8rem;">
+                            services:
+                            app:
+                            build: .
+                            environment:
+                            - OPA_URL=http://opa:8181/v1/data/rbac/allow
+                            depends_on: [opa]
+                            opa:
+                            image: openpolicyagent/opa:latest
+                            volumes: ['./policies:/policies']
+                            command: ["run", "--server", "/policies/rbac.rego"]
+                        </div>
                     </div>
                 </div>
             </div>
