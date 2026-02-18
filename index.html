@@ -75,7 +75,7 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1rem 2rem;
         }
 
         /* Views */
@@ -103,7 +103,7 @@
         /* Home View Styles */
         .hero {
             text-align: center;
-            padding: 4rem 0;
+            padding: 1.5rem 0 3rem 0;
         }
 
         .hero h1 {
@@ -611,6 +611,13 @@ CMD ["node", "index.js"]</code></pre>
             lightbox.classList.add('visible');
         }
 
+        // Global Lightbox Handler (Event Delegation)
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('image-clickable')) {
+                openLightbox(e.target.src);
+            }
+        });
+
         async function router() {
             const hash = location.hash || '#home';
             const route = routes[hash] || routes['#home'];
@@ -626,13 +633,6 @@ CMD ["node", "index.js"]</code></pre>
             if (hash !== '#home') {
                 bc.innerHTML += `<span>/</span> <strong>${route.title}</strong>`;
             }
-
-            // Bind Lightbox to all clickable images in the new view
-            activeView.querySelectorAll('.image-clickable').forEach(img => {
-                img.onclick = (e) => {
-                    openLightbox(e.target.src);
-                };
-            });
 
             // Re-highlight Code
             Prism.highlightAll();
