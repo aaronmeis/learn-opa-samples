@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OPA RBAC Samples | Interactive Landing Page</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <style>
         :root {
@@ -30,114 +33,138 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--bg);
             color: var(--text-main);
-            line-height: 1.6;
-            overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 80% 80%, rgba(129, 140, 248, 0.15) 0%, transparent 40%);
-            min-height: 100vh;
+            line-height: 1.4;
+            overflow: hidden;
+            /* Prevent scroll for single screen experience */
+            background-image:
+                radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.1) 0%, transparent 30%),
+                radial-gradient(circle at 90% 90%, rgba(129, 140, 248, 0.1) 0%, transparent 30%);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .header {
-            padding: 4rem 2rem;
+            padding: 1.5rem 1rem;
             text-align: center;
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, transparent 100%);
             border-bottom: 1px solid var(--glass-border);
         }
 
         .header h1 {
             font-family: 'Outfit', sans-serif;
-            font-size: 3.5rem;
+            font-size: 2.2rem;
             font-weight: 800;
             background: linear-gradient(to right, #fff, var(--accent));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
+            margin-bottom: 0.25rem;
             letter-spacing: -0.02em;
         }
 
         .header p {
-            font-size: 1.25rem;
+            font-size: 1rem;
             color: var(--text-muted);
-            max-width: 800px;
+            max-width: 700px;
             margin: 0 auto;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 4rem 2rem;
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            padding: 1.5rem;
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2.5rem;
-            margin-top: 2rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .card {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(8px);
             border: 1px solid var(--glass-border);
-            border-radius: 1.5rem;
-            padding: 2.5rem;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-4px);
             border-color: var(--primary);
-            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 20px var(--primary-glow);
+            box-shadow: 0 0 25px var(--primary-glow);
         }
 
         .card-tag {
             display: inline-block;
-            padding: 0.25rem 0.75rem;
+            padding: 0.2rem 0.5rem;
             background: var(--primary);
             color: white;
-            border-radius: 2rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.65rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            width: fit-content;
         }
 
         .card h2 {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.75rem;
-            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
             color: var(--accent);
         }
 
         .card p {
             color: var(--text-muted);
-            font-size: 1rem;
-            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .mermaid-section {
-            background: rgba(15, 23, 42, 0.5);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
             border: 1px solid var(--glass-border);
-            min-height: 200px;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Scale down mermaid diagrams for compact fit */
+        .mermaid {
+            transform: scale(0.85);
+            transform-origin: center;
         }
 
         .btn {
-            display: inline-block;
-            padding: 0.75rem 1.5rem;
+            display: block;
+            padding: 0.6rem;
             background: rgba(255, 255, 255, 0.05);
             color: white;
             text-decoration: none;
-            border-radius: 0.75rem;
+            border-radius: 0.5rem;
             font-weight: 600;
+            font-size: 0.85rem;
             border: 1px solid var(--glass-border);
-            transition: all 0.3s ease;
+            text-align: center;
+            transition: all 0.2s ease;
         }
 
         .btn:hover {
@@ -147,95 +174,108 @@
 
         .footer {
             text-align: center;
-            padding: 4rem 2rem;
+            padding: 0.75rem;
             color: var(--text-muted);
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             border-top: 1px solid var(--glass-border);
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .header h1 { font-size: 2.5rem; }
-            .grid { grid-template-columns: 1fr; }
+        @media (max-width: 1024px) {
+            .grid {
+                grid-template-columns: 1fr;
+                overflow-y: auto;
+            }
+
+            body {
+                overflow: auto;
+                height: auto;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <header class="header">
         <h1>OPA RBAC Samples</h1>
-        <p>A masterclass in Open Policy Agent integration strategies. Explore Sidecar, Co-located, and Centralized Bundle architectures.</p>
+        <p>Masterclass in Open Policy Agent integration strategies. Explore Sidecar, Co-located, and Centralized Bundle
+            architectures.</p>
     </header>
 
-    <main class="container">
+    <main class="main-content">
         <div class="grid">
             <!-- Project 1: FastAPI Starter -->
             <article class="card">
-                <span class="card-tag">Sidecar Pattern</span>
-                <h2>FastAPI Starter</h2>
-                <p>High-performance async API with automated OPA enforcement. Ideal for Kubernetes environments where policy is offloaded to a sidecar.</p>
-                
+                <div>
+                    <span class="card-tag">Sidecar Pattern</span>
+                    <h2>FastAPI Starter</h2>
+                    <p>Modern async implementation where OPA runs alongside as a pod sidecar.</p>
+                </div>
+
                 <div class="mermaid-section">
                     <div class="mermaid">
                         graph TD
-                        Client -->|Auth Header| API[FastAPI]
+                        Client --> API[FastAPI]
                         subgraph Sidecar
-                        API -->|JSON Input| OPA[OPA Sidecar]
-                        OPA -->|Decision| API
+                        API --> OPA
                         end
                     </div>
                 </div>
-                
-                <a href="fastapi-starter/README.md" class="btn">Explore Docs</a>
+
+                <a href="fastapi-starter/README.md" class="btn">View Project</a>
             </article>
 
             <!-- Project 2: Simple OPA -->
             <article class="card">
-                <span class="card-tag">Co-located Pattern</span>
-                <h2>Simple OPA</h2>
-                <p>Lightweight Flask demonstration with co-located OPA decision points. Designed for low latency and zero network hop overhead.</p>
-                
+                <div>
+                    <span class="card-tag">Co-located Pattern</span>
+                    <h2>Simple OPA</h2>
+                    <p>Lightweight Flask demonstration with zero network-hop OPA queries.</p>
+                </div>
+
                 <div class="mermaid-section">
                     <div class="mermaid">
                         graph LR
-                        User --> Flask[Flask API]
+                        User --> Flask[API]
                         subgraph Local
-                        Flask -- Query --> OPA[OPA]
+                        Flask -- Query --> OPA
                         end
                     </div>
                 </div>
-                
-                <a href="simple-opa/README.md" class="btn">Explore Docs</a>
+
+                <a href="simple-opa/README.md" class="btn">View Project</a>
             </article>
 
             <!-- Project 3: Complex OPA -->
             <article class="card">
-                <span class="card-tag">Bundle & Agent</span>
-                <h2>Complex OPA</h2>
-                <p>Enterprise-grade multi-service setup with OPA agents polling for centralized policy bundles from an Nginx server.</p>
-                
+                <div>
+                    <span class="card-tag">Bundle & Agent</span>
+                    <h2>Complex OPA</h2>
+                    <p>Enterprise multi-service setup with OPA agents polling a central bundle server.</p>
+                </div>
+
                 <div class="mermaid-section">
                     <div class="mermaid">
                         graph TD
-                        User --> Node[User Service]
+                        User --> Node[Svc]
                         subgraph Mesh
-                        Node --> Agent[OPA Agent]
+                        Node --> Agent
                         end
-                        Agent -.->|Poll| Nginx[Bundle Server]
+                        Agent -.-> Nginx[Bundle]
                     </div>
                 </div>
-                
-                <a href="complex-opa/README.md" class="btn">Explore Docs</a>
+
+                <a href="complex-opa/README.md" class="btn">View Project</a>
             </article>
         </div>
     </main>
 
     <footer class="footer">
-        <p>&copy; 2026 OPA RBAC Samples Contributors. Documentation verified for GitHub Pages.</p>
+        <p>&copy; 2026 OPA RBAC Samples Contributors. Optimized for Single-Screen Browsing.</p>
     </footer>
 
     <script>
-        mermaid.initialize({ 
+        mermaid.initialize({
             theme: 'dark',
             startOnLoad: true,
             securityLevel: 'loose',
@@ -243,4 +283,5 @@
         });
     </script>
 </body>
+
 </html>
