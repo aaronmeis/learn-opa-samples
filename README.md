@@ -56,3 +56,6 @@ This repo is configured for clean development:
 ## Security & Licensing
 - **Security**: See [SECURITY.md](SECURITY.md) for critical disclaimers regarding production authentication (JWT/OIDC).
 - **License**: This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+**Co-authored with 🚀 [Google Antigravity](https://github.com/google-deepmind/antigravity)**
