@@ -173,6 +173,16 @@
             gap: 3rem;
         }
 
+        /* Images and Lightbox */
+        .image-clickable {
+            cursor: zoom-in;
+            transition: transform 0.3s ease;
+        }
+
+        .image-clickable:hover {
+            transform: scale(1.02);
+        }
+
         .image-container {
             background: rgba(30, 41, 59, 0.4);
             border: 1px solid var(--glass-border);
@@ -193,6 +203,45 @@
             border-radius: 0.5rem;
             display: block;
             object-fit: contain;
+        }
+
+        /* Modal / Lightbox */
+        #lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            cursor: zoom-out;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        #lightbox.visible {
+            display: flex;
+            opacity: 1;
+        }
+
+        #lightbox img {
+            width: 80%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 1.5rem;
+            box-shadow: 0 0 50px 10px rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(0.9);
+        }
+
+        #lightbox.visible img {
+            transform: scale(1);
+            box-shadow: 0 0 60px 20px rgba(255, 255, 255, 0.15);
         }
 
         .explanation {
@@ -262,7 +311,8 @@
                 <p>Select an architectural pattern to explore how OPA secures modern applications.</p>
                 <div
                     style="margin-top: 2rem; border-radius: 1.5rem; overflow: hidden; border: 1px solid var(--glass-border); background: var(--card-bg); max-width: 800px; margin-left: auto; margin-right: auto;">
-                    <img src="overview.png" alt="Project Overview" style="width: 100%; height: auto; display: block;">
+                    <img src="overview.png" alt="Project Overview" class="image-clickable"
+                        style="width: 100%; height: auto; display: block;">
                 </div>
             </div>
             <div class="grid">
@@ -295,7 +345,7 @@
             <div class="detail-grid">
                 <div>
                     <div class="image-container">
-                        <img src="fastapi.png" alt="FastAPI Sidecar Architecture">
+                        <img src="fastapi.png" alt="FastAPI Sidecar Architecture" class="image-clickable">
                     </div>
                     <div class="explanation">
                         <h3>How it Works</h3>
@@ -372,7 +422,7 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]</code></pre>
             <div class="detail-grid">
                 <div>
                     <div class="image-container">
-                        <img src="simple.png" alt="Simple OPA Co-located Architecture">
+                        <img src="simple.png" alt="Simple OPA Co-located Architecture" class="image-clickable">
                     </div>
                     <div class="explanation">
                         <h3>How it Works</h3>
@@ -447,7 +497,8 @@ CMD ["python", "app.py"]</code></pre>
             <div class="detail-grid">
                 <div>
                     <div class="image-container">
-                        <img src="complex.png" alt="Complex OPA Bundle Distribution Architecture">
+                        <img src="complex.png" alt="Complex OPA Bundle Distribution Architecture"
+                            class="image-clickable">
                     </div>
                     <div class="explanation">
                         <h3>How it Works</h3>
@@ -512,6 +563,11 @@ CMD ["node", "index.js"]</code></pre>
         </section>
     </div>
 
+    <!-- Lightbox Modal -->
+    <div id="lightbox">
+        <img id="lightbox-img" src="" alt="Zoomed architecture">
+    </div>
+
     <footer class="footer">
         <p>&copy; 2026 OPA RBAC Samples. Technical Deep Dive Edition.</p>
     </footer>
@@ -531,6 +587,30 @@ CMD ["node", "index.js"]</code></pre>
             '#complex': { id: 'complex', title: 'Complex OPA Deep Dive' }
         };
 
+        // Modal Elements
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+
+        // Close lightbox on click
+        lightbox.onclick = () => {
+            lightbox.classList.remove('visible');
+            // Give time for transition before hiding display
+            setTimeout(() => {
+                if (!lightbox.classList.contains('visible')) {
+                    lightbox.style.display = 'none';
+                }
+            }, 300);
+        };
+
+        // Open Lightbox
+        function openLightbox(src) {
+            lightboxImg.src = src;
+            lightbox.style.display = 'flex';
+            // Trigger reflow for transition
+            lightbox.offsetHeight;
+            lightbox.classList.add('visible');
+        }
+
         async function router() {
             const hash = location.hash || '#home';
             const route = routes[hash] || routes['#home'];
@@ -546,6 +626,13 @@ CMD ["node", "index.js"]</code></pre>
             if (hash !== '#home') {
                 bc.innerHTML += `<span>/</span> <strong>${route.title}</strong>`;
             }
+
+            // Bind Lightbox to all clickable images in the new view
+            activeView.querySelectorAll('.image-clickable').forEach(img => {
+                img.onclick = (e) => {
+                    openLightbox(e.target.src);
+                };
+            });
 
             // Re-highlight Code
             Prism.highlightAll();
