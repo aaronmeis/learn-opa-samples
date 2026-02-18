@@ -73,6 +73,15 @@ Ensure all systems are functioning correctly:
 pytest api/tests/
 ```
 
+### 🧪 Manual OPA Testing (Web UI)
+1. Open **[http://localhost:8181](http://localhost:8181)** in your browser.
+2. In the **Query** box, type: `data.rbac.allow`
+3. In the **Input Data (JSON)** box, paste the `input` block from [test_scenarios.json](opa/test_scenarios.json).
+   *Example:* `{"user": "alice", "role": "admin", "method": "GET", "path": ["admin"]}`
+4. Click **Submit** to see the boolean result.
+
+---
+
 ---
 **Version:** 1.0.0  
 **Pattern:** Sidecar 

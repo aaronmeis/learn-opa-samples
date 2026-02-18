@@ -1,0 +1,41 @@
+{
+    "_gui_instructions": {
+        "step_1_query_box": "data.rbac.allow",
+        "step_2_input_box": "Copy ONLY the 'input' block from below into the 'Input Data (JSON)' field."
+    },
+    "scenarios": {
+        "admin_access_secure": {
+            "input": {
+                "user": "alice",
+                "role": "admin",
+                "method": "GET",
+                "path": [
+                    "admin"
+                ]
+            },
+            "expected": "true"
+        },
+        "user_access_workspace": {
+            "input": {
+                "user": "bob",
+                "role": "user",
+                "method": "GET",
+                "path": [
+                    "user"
+                ]
+            },
+            "expected": "true"
+        },
+        "user_denied_admin": {
+            "input": {
+                "user": "bob",
+                "role": "user",
+                "method": "GET",
+                "path": [
+                    "admin"
+                ]
+            },
+            "expected": "false"
+        }
+    }
+}

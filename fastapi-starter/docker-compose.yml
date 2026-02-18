@@ -22,6 +22,7 @@ services:
       - "run"
       - "--server"
       - "--log-level=debug"
+      - "--addr=:8181"
       - "/policies/rbac.rego"
     networks:
       - opa-net

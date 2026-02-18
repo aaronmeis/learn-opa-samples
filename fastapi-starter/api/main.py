@@ -1,10 +1,13 @@
-from fastapi import FastAPI, Request, HTTPException, Header
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 import httpx
+import os
 import json
 
 app = FastAPI(title="FastAPI OPA RBAC Starter")
 
-OPA_URL = "http://opa:8181/v1/data/rbac/allow"
+# Use environment variable with fallback
+OPA_URL = os.getenv("OPA_URL", "http://opa:8181/v1/data/rbac/allow")
 
 async def check_opa_permission(user: str, role: str, method: str, path: list):
     input_data = {
@@ -16,14 +19,19 @@ async def check_opa_permission(user: str, role: str, method: str, path: list):
         }
     }
     
+    print(f"DEBUG: Querying OPA at {OPA_URL} with input: {json.dumps(input_data)}")
+    
     async with httpx.AsyncClient() as client:
         try:
             response = await client.post(OPA_URL, json=input_data)
+            print(f"DEBUG: OPA Response Status: {response.status_code}")
+            print(f"DEBUG: OPA Response Body: {response.text}")
+            
             response.raise_for_status()
             result = response.json().get("result", False)
             return result
         except Exception as e:
-            print(f"Error connecting to OPA: {e}")
+            print(f"DEBUG: Error connecting to OPA: {e}")
             return False
 
 @app.middleware("http")
@@ -35,12 +43,17 @@ async def opa_auth_middleware(request: Request, call_next):
     user = request.headers.get("X-User-Id", "anonymous")
     role = request.headers.get("X-User-Role", "guest")
     method = request.method
-    path = request.url.path.strip("/").split("/")
+    # Handle root path properly
+    raw_path = request.url.path.strip("/")
+    path = raw_path.split("/") if raw_path else []
 
     allowed = await check_opa_permission(user, role, method, path)
     
     if not allowed:
-        raise HTTPException(status_code=403, detail="Forbidden by OPA Policy")
+        return JSONResponse(
+            status_code=403,
+            content={"detail": "Forbidden by OPA Policy", "context": {"user": user, "role": role}}
+        )
         
     return await call_next(request)
 

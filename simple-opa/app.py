@@ -7,20 +7,26 @@ app = Flask(__name__)
 OPA_URL = os.environ.get("OPA_URL", "http://opa:8181/v1/data/rbac/allow")
 
 def check_permission(user, role, method, path):
+    raw_path = path.strip("/")
+    split_path = raw_path.split("/") if raw_path else []
+    
     input_data = {
         "input": {
             "user": user,
             "role": role,
             "method": method,
-            "path": path.strip("/").split("/")
+            "path": split_path
         }
     }
+    print(f"DEBUG: Querying OPA at {OPA_URL} with input: {input_data}")
     try:
         response = requests.post(OPA_URL, json=input_data)
+        print(f"DEBUG: OPA Response Status: {response.status_code}")
+        print(f"DEBUG: OPA Response Body: {response.text}")
         response.raise_for_status()
         return response.json().get("result", False)
     except Exception as e:
-        print(f"Error connecting to OPA: {e}")
+        print(f"DEBUG: Error connecting to OPA: {e}")
         return False
 
 @app.before_request
