@@ -366,7 +366,23 @@
                     </div>
                 </div>
                 <div>
+                    <div style="margin-bottom: 2rem;">
+                        <h3>Sample Input (JSON)</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">What the API
+                            sends to OPA:</p>
+                        <pre><code class="language-json">{
+  "input": {
+    "user": "alice",
+    "role": "admin",
+    "method": "GET",
+    "path": ["admin"]
+  }
+}</code></pre>
+                    </div>
+
                     <h3>Logic Sample (Rego)</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">How OPA interprets
+                        the input:</p>
                     <pre><code class="language-rego">package rbac
 default allow = false
 
@@ -441,7 +457,23 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]</code></pre>
                     </div>
                 </div>
                 <div>
+                    <div style="margin-bottom: 2rem;">
+                        <h3>Sample Input (JSON)</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">The Flask
+                            request context:</p>
+                        <pre><code class="language-json">{
+  "input": {
+    "user": "bob",
+    "role": "user",
+    "method": "GET",
+    "path": ["user"]
+  }
+}</code></pre>
+                    </div>
+
                     <h3>Request Flow (Python)</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Hook logic in
+                        app.py:</p>
                     <pre><code class="language-python"># Flask Hook
 @app.before_request
 def check_auth():
@@ -518,7 +550,23 @@ CMD ["python", "app.py"]</code></pre>
                     </div>
                 </div>
                 <div>
+                    <div style="margin-bottom: 2rem;">
+                        <h3>Sample Input (JSON)</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Distributed
+                            context input:</p>
+                        <pre><code class="language-json">{
+  "input": {
+    "user": "system-agent-01",
+    "role": "sync-service",
+    "method": "POST",
+    "path": ["bundles", "update"]
+  }
+}</code></pre>
+                    </div>
+
                     <h3>Agent Config (YAML)</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Polling
+                        configuration:</p>
                     <pre><code class="language-yaml">services:
   bundle-server:
     url: http://nginx:80
