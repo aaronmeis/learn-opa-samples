@@ -37,8 +37,8 @@ C4Container
 
 ## 🗺️ Architectural Blowout
 ![Architecture Drawing](architecture/drawing.png)
-> [!TIP]
-> **Placeholder**: Replace this with an architectural blowout diagram showing internal POD/Container networking and data flow layers.
+> [!NOTE]
+> For a high-fidelity visual breakdown of the sidecar data flow and interactive code samples, refer to the **FastAPI Deep Dive** section in the root [Interactive Guide](index.html).
 
 ## 🏁 Quick Start
 

@@ -37,8 +37,8 @@ graph TD
 
 ## 🗺️ Architectural Blowout
 ![Architecture Drawing](architecture/drawing.png)
-> [!TIP]
-> **Placeholder**: Replace this with an enterprise architectural diagram showing cross-service trust, VPC boundaries, and bundle distribution.
+> [!NOTE]
+> For an enterprise-grade visualization of policy bundle distribution and distributed agent polling, visit the **Complex OPA** section in the root [Interactive Guide](index.html).
 
 ## 🏁 Quick Start
 

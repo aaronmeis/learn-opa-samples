@@ -30,8 +30,8 @@ graph LR
 
 ## 🗺️ Architectural Blowout
 ![Architecture Drawing](architecture/drawing.png)
-> [!TIP]
-> **Placeholder**: Replace this with a diagram showing the co-located binary relationship in a shared host or container pod.
+> [!NOTE]
+> For a detailed look at the Flask request lifecycle and co-located OPA decision points, explore the **Simple OPA** view in the root [Interactive Guide](index.html).
 
 ## 🏁 Quick Start
 

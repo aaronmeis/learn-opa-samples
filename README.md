@@ -10,6 +10,16 @@ A collection of sample projects demonstrating Open Policy Agent (OPA) integratio
 | `simple-opa` | Flask (Python) | Co-located | Lightweight demo using Python's Flask and local OPA decisions. |
 | `complex-opa` | Node.js / Nginx | Centralized Bundle | Enterprise-grade setup with OPA agents and policy bundle server. |
 
+## 🚀 Interactive Learning Guide
+
+This repository features a **Premium Interactive Guide** (`index.html`) that provides:
+- **Visual Deep-Dives**: Dynamic Mermaid diagrams for each architectural pattern.
+- **Side-by-Side Code**: Comparative views of Rego policies and API implementations.
+- **Deployment Blueprints**: Ready-to-use Docker and Docker Compose snippets.
+- **One-Click Navigation**: Seamless hash-based routing between project views.
+
+To use the guide, simply open `index.html` in your browser.
+
 ## Quick Start
 
 ### 1. Prerequisites
