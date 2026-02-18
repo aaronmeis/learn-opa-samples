@@ -180,6 +180,22 @@
             border-radius: 1rem;
             padding: 2rem;
             margin-bottom: 2rem;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .mermaid {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .mermaid svg {
+            max-width: 100% !important;
+            height: auto !important;
         }
 
         .explanation {
@@ -553,14 +569,36 @@ CMD ["node", "index.js"]</code></pre>
             }
 
             // Sync Mermaid (Force re-render for dynamic views)
-            try {
-                const diagrams = activeView.querySelectorAll('.mermaid:not([data-processed="true"])');
-                if (diagrams.length > 0) {
-                    await mermaid.run({ nodes: diagrams });
-                }
-            } catch (err) {
-                console.error("Mermaid rendering error:", err);
-            }
+            // We wait for the browser to paint the 'active' view to ensure dimensions are available
+            requestAnimationFrame(() => {
+                requestAnimationFrame(async () => {
+                    try {
+                        const diagrams = activeView.querySelectorAll('.mermaid');
+                        for (const diag of diagrams) {
+                            // If it's already processed, we might need to fix it if it has zero height
+                            if (diag.getAttribute('data-processed') === 'true') {
+                                const svg = diag.querySelector('svg');
+                                if (svg && svg.getBoundingClientRect().height < 10) {
+                                    // It failed the first time or was rendered hidden
+                                    diag.removeAttribute('data-processed');
+                                    diag.innerHTML = diag.getAttribute('data-original-code') || diag.innerHTML;
+                                } else {
+                                    continue;
+                                }
+                            } else {
+                                // Store original code for re-renders
+                                diag.setAttribute('data-original-code', diag.innerHTML);
+                            }
+
+                            await mermaid.run({
+                                nodes: [diag]
+                            });
+                        }
+                    } catch (err) {
+                        console.error("Mermaid rendering error:", err);
+                    }
+                });
+            });
 
             // Re-highlight Code
             Prism.highlightAll();
@@ -569,9 +607,20 @@ CMD ["node", "index.js"]</code></pre>
         window.addEventListener('hashchange', router);
         window.addEventListener('load', () => {
             mermaid.initialize({
-                theme: 'dark',
+                theme: 'base',
+                themeVariables: {
+                    primaryColor: '#6366f1',
+                    primaryTextColor: '#fff',
+                    primaryBorderColor: '#818cf8',
+                    lineColor: '#94a3b8',
+                    secondaryColor: '#1e293b',
+                    tertiaryColor: '#0f172a',
+                    mainBkg: '#1e293b',
+                    nodeBorder: '#818cf8'
+                },
                 startOnLoad: false,
-                securityLevel: 'loose'
+                securityLevel: 'loose',
+                flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' }
             });
             router();
         });
