@@ -111,6 +111,7 @@
             margin-bottom: 1rem;
             background: linear-gradient(to right, #fff, var(--accent));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -292,6 +293,9 @@
                             <li><strong>Consistency:</strong> The same OPA sidecar can be used by disparate services in
                                 a service mesh (e.g., Istio).</li>
                         </ul>
+                        <a href="https://www.openpolicyagent.org/docs/latest/architecture/#sidecar" target="_blank"
+                            class="btn" style="background: var(--primary); border: none;">Official OPA Sidecar Docs
+                            &rarr;</a>
                     </div>
                 </div>
                 <div>
@@ -343,6 +347,8 @@
                             <li><strong>Simplicity:</strong> Great for monolithic applications moving towards
                                 fine-grained access control.</li>
                         </ul>
+                        <a href="https://www.openpolicyagent.org/docs/latest/rest-api/" target="_blank" class="btn"
+                            style="background: var(--primary); border: none;">OPA REST API Docs &rarr;</a>
                     </div>
                 </div>
                 <div>
@@ -397,6 +403,8 @@
                             <li><strong>Data Decoupling:</strong> Bundles can also contain large data sets (JSON) for
                                 context-aware decisions.</li>
                         </ul>
+                        <a href="https://www.openpolicyagent.org/docs/latest/management-bundles/" target="_blank"
+                            class="btn" style="background: var(--primary); border: none;">OPA Bundle Docs &rarr;</a>
                     </div>
                 </div>
                 <div>
@@ -429,13 +437,14 @@
             '#complex': { id: 'complex', title: 'Complex OPA Deep Dive' }
         };
 
-        function router() {
+        async function router() {
             const hash = location.hash || '#home';
             const route = routes[hash] || routes['#home'];
 
             // Update Views
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById(route.id).classList.add('active');
+            const activeView = document.getElementById(route.id);
+            activeView.classList.add('active');
 
             // Update Breadcrumbs
             const bc = document.getElementById('breadcrumb');
@@ -444,13 +453,27 @@
                 bc.innerHTML += `<span>/</span> <strong>${route.title}</strong>`;
             }
 
-            // Sync Mermaid
-            mermaid.init(undefined, document.querySelectorAll('.active .mermaid'));
+            // Sync Mermaid (Force re-render for dynamic views)
+            try {
+                // Find diagrams in the active view that haven't been rendered yet
+                const diagrams = activeView.querySelectorAll('.mermaid:not([data-processed="true"])');
+                if (diagrams.length > 0) {
+                    await mermaid.run({
+                        nodes: diagrams
+                    });
+                }
+            } catch (err) {
+                console.error("Mermaid rendering error:", err);
+            }
         }
 
         window.addEventListener('hashchange', router);
         window.addEventListener('load', () => {
-            mermaid.initialize({ theme: 'dark', startOnLoad: false });
+            mermaid.initialize({
+                theme: 'dark',
+                startOnLoad: false,
+                securityLevel: 'loose'
+            });
             router();
         });
     </script>
