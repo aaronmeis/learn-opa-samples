@@ -1,0 +1,31 @@
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - OPA_URL=http://opa:8181/v1/data/rbac/allow
+    depends_on:
+      - opa
+    networks:
+      - opa-net
+
+  opa:
+    image: openpolicyagent/opa:latest
+    ports:
+      - "8181:8181"
+    volumes:
+      - ./opa:/policies
+    command:
+      - "run"
+      - "--server"
+      - "--log-level=debug"
+      - "/policies/rbac.rego"
+    networks:
+      - opa-net
+
+networks:
+  opa-net:
+    driver: bridge

@@ -1,0 +1,7 @@
+services:
+  bundle:
+    url: http://bundle-server:80/bundles/rbac.tar.gz
+    polling_interval_seconds: 10
+
+decision_logs:
+  console: true

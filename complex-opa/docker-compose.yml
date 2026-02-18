@@ -1,0 +1,27 @@
+services:
+  user-service:
+    build: ./user-service
+    ports:
+      - "3000:3000"
+    environment:
+      - OPA_URL=http://opa:8181/v1/data/rbac/allow
+    depends_on:
+      - opa
+
+  opa:
+    image: openpolicyagent/opa:latest
+    ports:
+      - "8183:8181"
+    volumes:
+      - ./opa-config:/config
+    command:
+      - "run"
+      - "--server"
+      - "--config-file=/config/config.yaml"
+
+  bundle-server:
+    image: nginx:alpine
+    ports:
+      - "8888:80"
+    volumes:
+      - ./bundle-server/www:/usr/share/nginx/html
