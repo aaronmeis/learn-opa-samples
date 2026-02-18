@@ -173,26 +173,26 @@
             gap: 3rem;
         }
 
-        .ascii-container {
+        .image-container {
             background: rgba(30, 41, 59, 0.4);
             border: 1px solid var(--glass-border);
             border-radius: 1rem;
-            padding: 2rem;
+            padding: 1.5rem;
             margin-bottom: 2rem;
-            min-height: 300px;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow-x: auto;
+            overflow: hidden;
+            background: var(--card-bg);
         }
 
-        .ascii-art {
-            font-family: 'Fira Code', monospace;
-            font-size: 0.85rem;
-            line-height: 1.2;
-            color: var(--accent);
-            white-space: pre;
-            text-align: left;
+        .image-container img {
+            max-width: 100%;
+            max-height: 450px;
+            height: auto;
+            border-radius: 0.5rem;
+            display: block;
+            object-fit: contain;
         }
 
         .explanation {
@@ -294,27 +294,8 @@
             </div>
             <div class="detail-grid">
                 <div>
-                    <div class="ascii-container">
-                        <div class="ascii-art">
-                            [ Client ]
-                            |
-                            | HTTP Request
-                            v
-                            +-----------------------------+
-                            | Kubernetes Pod |
-                            | +-----------------------+ |
-                            | | FastAPI App | |
-                            | +-----------+-----------+ |
-                            | | Auth Query |
-                            | v |
-                            | +-----------------------+ |
-                            | | OPA Sidecar | |
-                            | +-----------------------+ |
-                            +--------------+--------------+
-                            |
-                            v
-                            [ Response ]
-                        </div>
+                    <div class="image-container">
+                        <img src="fastapi.png" alt="FastAPI Sidecar Architecture">
                     </div>
                     <div class="explanation">
                         <h3>How it Works</h3>
@@ -390,25 +371,8 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]</code></pre>
             </div>
             <div class="detail-grid">
                 <div>
-                    <div class="ascii-container">
-                        <div class="ascii-art">
-                            [ User Client ]
-                            |
-                            | Request
-                            v
-                            +-----------------------+
-                            | Shared Host / VPS |
-                            | +-----------------+ |
-                            | | Flask API | |
-                            | +--------+--------+ |
-                            | | |
-                            | | Query |
-                            | v |
-                            | +-----------------+ |
-                            | | OPA Binary | |
-                            | +-----------------+ |
-                            +-----------------------+
-                        </div>
+                    <div class="image-container">
+                        <img src="simple.png" alt="Simple OPA Co-located Architecture">
                     </div>
                     <div class="explanation">
                         <h3>How it Works</h3>
@@ -482,44 +446,29 @@ CMD ["python", "app.py"]</code></pre>
             </div>
             <div class="detail-grid">
                 <div>
-                    <div class="ascii-container">
-                        <div class="ascii-art">
-                            [ Admin ]
-                            |
-                            | Rego Push
-                            v
-                            [ Git Repo ]
-                            |
-                            | CI/CD Publish
-                            v
-                            [ Bundle Server ] <----------+ | | | /v1/bundles | v | +-----------------------+ | |
-                                Regional Cluster | | | +-----------------+ | | | | Node.js Svc | | | |
-                                +--------+--------+ | | | | Query | | | v | | | +-----------------+ | | | | OPA Agent |
-                                | --- + | +-----------------+ | Auto-Poll +-----------------------+ </div>
-                        </div>
-                        <div class="explanation">
-                            <h3>How it Works</h3>
-                            <p>OPA Agents are configured with a `config.yaml` to poll a remote endpoint every 10
-                                seconds.
-                                Policies are served as `.tar.gz` bundles.</p>
-                            <h3>OPA Leverage</h3>
-                            <ul>
-                                <li><strong>Dynamic Global Updates:</strong> Update access rules across 1000s of
-                                    services in
-                                    seconds without a redeploy.</li>
-                                <li><strong>Data Decoupling:</strong> Bundles can also contain large data sets (JSON)
-                                    for
-                                    context-aware decisions.</li>
-                            </ul>
-                            <a href="https://www.openpolicyagent.org/docs/latest/management-bundles/" target="_blank"
-                                class="btn"
-                                style="background: var(--primary); border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none; color: white; display: inline-block; font-weight: 600;">OPA
-                                Bundle Docs &rarr;</a>
-                        </div>
+                    <div class="image-container">
+                        <img src="complex.png" alt="Complex OPA Bundle Distribution Architecture">
                     </div>
-                    <div>
-                        <h3>Agent Config (YAML)</h3>
-                        <pre><code class="language-yaml">services:
+                    <div class="explanation">
+                        <h3>How it Works</h3>
+                        <p>OPA Agents are configured with a `config.yaml` to poll a remote endpoint every 10 seconds.
+                            Policies are served as `.tar.gz` bundles.</p>
+                        <h3>OPA Leverage</h3>
+                        <ul>
+                            <li><strong>Dynamic Global Updates:</strong> Update access rules across 1000s of services in
+                                seconds without a redeploy.</li>
+                            <li><strong>Data Decoupling:</strong> Bundles can also contain large data sets (JSON) for
+                                context-aware decisions.</li>
+                        </ul>
+                        <a href="https://www.openpolicyagent.org/docs/latest/management-bundles/" target="_blank"
+                            class="btn"
+                            style="background: var(--primary); border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none; color: white; display: inline-block; font-weight: 600;">OPA
+                            Bundle Docs &rarr;</a>
+                    </div>
+                </div>
+                <div>
+                    <h3>Agent Config (YAML)</h3>
+                    <pre><code class="language-yaml">services:
   bundle-server:
     url: http://nginx:80
 bundles:
@@ -528,26 +477,25 @@ bundles:
     resource: bundles/rbac.tar.gz
     polling:
       min_delay_seconds: 10</code></pre>
-                    </div>
                 </div>
+            </div>
 
-                <div style="margin-top: 3rem;">
-                    <h2 style="font-family: 'Outfit', sans-serif; margin-bottom: 1.5rem; color: var(--accent);">
-                        Deployment
-                        Layout</h2>
-                    <div class="detail-grid">
-                        <div>
-                            <h3>user-service/Dockerfile</h3>
-                            <pre><code class="language-dockerfile">FROM node:18-alpine
+            <div style="margin-top: 3rem;">
+                <h2 style="font-family: 'Outfit', sans-serif; margin-bottom: 1.5rem; color: var(--accent);">Deployment
+                    Layout</h2>
+                <div class="detail-grid">
+                    <div>
+                        <h3>user-service/Dockerfile</h3>
+                        <pre><code class="language-dockerfile">FROM node:18-alpine
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
 CMD ["node", "index.js"]</code></pre>
-                        </div>
-                        <div>
-                            <h3>docker-compose.yml</h3>
-                            <pre><code class="language-yaml">services:
+                    </div>
+                    <div>
+                        <h3>docker-compose.yml</h3>
+                        <pre><code class="language-yaml">services:
   user-service:
     build: ./user-service
     depends_on: [opa]
@@ -558,9 +506,9 @@ CMD ["node", "index.js"]</code></pre>
   bundle-server:
     image: nginx:alpine
     volumes: ['./bundle-server/www:/usr/share/nginx/html']</code></pre>
-                        </div>
                     </div>
                 </div>
+            </div>
         </section>
     </div>
 
