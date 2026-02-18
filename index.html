@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OPA RBAC Samples | Interactive Landing Page</title>
+    <title>OPA RBAC Samples | Interactive Guide</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700&family=Fira+Code:wght@400;500&display=swap"
         rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <style>
@@ -21,6 +21,7 @@
             --text-muted: #94a3b8;
             --accent: #818cf8;
             --glass-border: rgba(255, 255, 255, 0.1);
+            --code-bg: #1e293b;
         }
 
         * {
@@ -33,162 +34,192 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--bg);
             color: var(--text-main);
-            line-height: 1.4;
-            overflow: hidden;
-            /* Prevent scroll for single screen experience */
+            line-height: 1.5;
             background-image:
                 radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.1) 0%, transparent 30%),
                 radial-gradient(circle at 90% 90%, rgba(129, 140, 248, 0.1) 0%, transparent 30%);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+            min-height: 100vh;
         }
 
-        .header {
-            padding: 1.5rem 1rem;
-            text-align: center;
+        .nav-bar {
+            padding: 1rem 2rem;
             border-bottom: 1px solid var(--glass-border);
-        }
-
-        .header h1 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 2.2rem;
-            font-weight: 800;
-            background: linear-gradient(to right, #fff, var(--accent));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.25rem;
-            letter-spacing: -0.02em;
-        }
-
-        .header p {
-            font-size: 1rem;
-            color: var(--text-muted);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .main-content {
-            flex: 1;
             display: flex;
             align-items: center;
-            padding: 1.5rem;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .breadcrumb a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .breadcrumb span {
+            margin: 0 0.25rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Views */
+        .view {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Home View Styles */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            width: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
         }
 
+        /* Card Styles */
         .card {
             background: var(--card-bg);
-            backdrop-filter: blur(8px);
             border: 1px solid var(--glass-border);
-            border-radius: 1rem;
-            padding: 1.5rem;
+            border-radius: 1.5rem;
+            padding: 2rem;
             transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            cursor: pointer;
         }
 
         .card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-8px);
             border-color: var(--primary);
-            box-shadow: 0 0 25px var(--primary-glow);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
         }
 
         .card-tag {
             display: inline-block;
-            padding: 0.2rem 0.5rem;
+            padding: 0.25rem 0.75rem;
             background: var(--primary);
-            color: white;
-            border-radius: 0.5rem;
-            font-size: 0.65rem;
+            border-radius: 2rem;
+            font-size: 0.7rem;
             font-weight: 700;
-            margin-bottom: 0.75rem;
             text-transform: uppercase;
-            width: fit-content;
+            margin-bottom: 1rem;
         }
 
         .card h2 {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.4rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
             color: var(--accent);
         }
 
-        .card p {
+        /* Detail View Styles */
+        .detail-header {
+            margin-bottom: 3rem;
+        }
+
+        .detail-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 3rem;
+        }
+
+        .mermaid-container {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .explanation {
             color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            font-size: 1.1rem;
         }
 
-        .mermaid-section {
-            background: rgba(15, 23, 42, 0.4);
+        .explanation h3 {
+            color: #fff;
+            margin: 1.5rem 0 0.75rem 0;
+        }
+
+        .explanation ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .explanation li {
+            margin-bottom: 0.5rem;
+        }
+
+        .code-block {
+            background: var(--code-bg);
+            padding: 1.5rem;
             border-radius: 0.75rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
             border: 1px solid var(--glass-border);
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        /* Scale down mermaid diagrams for compact fit */
-        .mermaid {
-            transform: scale(0.85);
-            transform-origin: center;
-        }
-
-        .btn {
-            display: block;
-            padding: 0.6rem;
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
-            text-decoration: none;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            font-size: 0.85rem;
-            border: 1px solid var(--glass-border);
-            text-align: center;
-            transition: all 0.2s ease;
-        }
-
-        .btn:hover {
-            background: white;
-            color: var(--bg);
+            overflow-x: auto;
+            color: #e2e8f0;
         }
 
         .footer {
             text-align: center;
-            padding: 0.75rem;
+            padding: 4rem;
             color: var(--text-muted);
-            font-size: 0.75rem;
             border-top: 1px solid var(--glass-border);
+            margin-top: 4rem;
         }
 
-        @media (max-width: 1024px) {
-            .grid {
+        @media (max-width: 900px) {
+            .detail-grid {
                 grid-template-columns: 1fr;
-                overflow-y: auto;
-            }
-
-            body {
-                overflow: auto;
-                height: auto;
             }
         }
     </style>
@@ -196,90 +227,231 @@
 
 <body>
 
-    <header class="header">
-        <h1>OPA RBAC Samples</h1>
-        <p>Masterclass in Open Policy Agent integration strategies. Explore Sidecar, Co-located, and Centralized Bundle
-            architectures.</p>
-    </header>
+    <nav class="nav-bar">
+        <div class="breadcrumb" id="breadcrumb">
+            <a href="#home">Home</a>
+        </div>
+    </nav>
 
-    <main class="main-content">
-        <div class="grid">
-            <!-- Project 1: FastAPI Starter -->
-            <article class="card">
-                <div>
+    <div class="container">
+        <!-- Home View -->
+        <section id="home" class="view active">
+            <div class="hero">
+                <h1>OPA RBAC Interactive</h1>
+                <p>Select an architectural pattern to explore how OPA secures modern applications.</p>
+            </div>
+            <div class="grid">
+                <div class="card" onclick="location.hash='#fastapi'">
                     <span class="card-tag">Sidecar Pattern</span>
                     <h2>FastAPI Starter</h2>
-                    <p>Modern async implementation where OPA runs alongside as a pod sidecar.</p>
+                    <p>Decoupled security using a high-performance sidecar approach.</p>
                 </div>
-
-                <div class="mermaid-section">
-                    <div class="mermaid">
-                        graph TD
-                        Client --> API[FastAPI]
-                        subgraph Sidecar
-                        API --> OPA
-                        end
-                    </div>
-                </div>
-
-                <a href="fastapi-starter/README.md" class="btn">View Project</a>
-            </article>
-
-            <!-- Project 2: Simple OPA -->
-            <article class="card">
-                <div>
+                <div class="card" onclick="location.hash='#simple'">
                     <span class="card-tag">Co-located Pattern</span>
                     <h2>Simple OPA</h2>
-                    <p>Lightweight Flask demonstration with zero network-hop OPA queries.</p>
+                    <p>Minimal latency with a co-located Flask + OPA integration.</p>
                 </div>
-
-                <div class="mermaid-section">
-                    <div class="mermaid">
-                        graph LR
-                        User --> Flask[API]
-                        subgraph Local
-                        Flask -- Query --> OPA
-                        end
-                    </div>
-                </div>
-
-                <a href="simple-opa/README.md" class="btn">View Project</a>
-            </article>
-
-            <!-- Project 3: Complex OPA -->
-            <article class="card">
-                <div>
-                    <span class="card-tag">Bundle & Agent</span>
+                <div class="card" onclick="location.hash='#complex'">
+                    <span class="card-tag">Bundle Distribution</span>
                     <h2>Complex OPA</h2>
-                    <p>Enterprise multi-service setup with OPA agents polling a central bundle server.</p>
+                    <p>Enterprise-grade policy delivery using centralized bundles.</p>
                 </div>
+            </div>
+        </section>
 
-                <div class="mermaid-section">
-                    <div class="mermaid">
-                        graph TD
-                        User --> Node[Svc]
-                        subgraph Mesh
-                        Node --> Agent
-                        end
-                        Agent -.-> Nginx[Bundle]
+        <!-- FastAPI Detail View -->
+        <section id="fastapi" class="view">
+            <div class="detail-header">
+                <span class="card-tag">Sidecar Pattern</span>
+                <h1>FastAPI Starter Deep Dive</h1>
+                <p class="explanation">This pattern offloads authorization to a dedicated container (sidecar) running
+                    within the same network namespace.</p>
+            </div>
+            <div class="detail-grid">
+                <div>
+                    <div class="mermaid-container">
+                        <div class="mermaid">
+                            graph TD
+                            Client[External Client] -->|HTTP Request| API[FastAPI App]
+                            subgraph "Kubernetes Pod / Container Group"
+                            API -->|Auth Query| OPA[OPA Sidecar]
+                            OPA -->|Allow/Deny| API
+                            end
+                            API -->|Response| Client
+                        </div>
+                    </div>
+                    <div class="explanation">
+                        <h3>How it Works</h3>
+                        <p>FastAPI uses an asynchronous middleware that intercepts every request. Instead of hardcoding
+                            permissions, the middleware gathers context (user, role, method, path) and sends it to OPA.
+                        </p>
+                        <h3>OPA Leverage</h3>
+                        <ul>
+                            <li><strong>Isolation:</strong> If security rules change, you only update the OPA sidecar or
+                                its policy, not the API code.</li>
+                            <li><strong>Consistency:</strong> The same OPA sidecar can be used by disparate services in
+                                a service mesh (e.g., Istio).</li>
+                        </ul>
                     </div>
                 </div>
+                <div>
+                    <h3>Logic Sample</h3>
+                    <div class="code-block">
+                        package rbac
+                        default allow = false
 
-                <a href="complex-opa/README.md" class="btn">View Project</a>
-            </article>
-        </div>
-    </main>
+                        allow if {
+                        input.role == "admin"
+                        }
+
+                        allow if {
+                        input.role == "user"
+                        input.path == ["user"]
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Simple Detail View -->
+        <section id="simple" class="view">
+            <div class="detail-header">
+                <span class="card-tag">Co-located Pattern</span>
+                <h1>Simple OPA Deep Dive</h1>
+                <p class="explanation">A streamlined approach where the application and OPA run on the same host,
+                    communicating via localhost.</p>
+            </div>
+            <div class="detail-grid">
+                <div>
+                    <div class="mermaid-container">
+                        <div class="mermaid">
+                            graph LR
+                            User --> Flask[Flask API]
+                            subgraph "Shared Host / VPS"
+                            Flask -- "Localhost Query" --> OPA[OPA Binary]
+                            end
+                        </div>
+                    </div>
+                    <div class="explanation">
+                        <h3>How it Works</h3>
+                        <p>This project uses Flask's `before_request` hook. Before any route logic executes, a
+                            synchronous HTTP call is made to a local OPA instance.</p>
+                        <h3>OPA Leverage</h3>
+                        <ul>
+                            <li><strong>Low Latency:</strong> Minimal network overhead compared to remote authorization
+                                services.</li>
+                            <li><strong>Simplicity:</strong> Great for monolithic applications moving towards
+                                fine-grained access control.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <h3>Request Flow</h3>
+                    <div class="code-block">
+                        # Flask Hook
+                        @app.before_request
+                        def check_auth():
+                        # Gather Input
+                        data = {
+                        "user": request.headers.get("X-User-Id"),
+                        "role": request.headers.get("X-User-Role"),
+                        "path": request.path
+                        }
+                        # Decide
+                        if not check_opa(data):
+                        return abort(403)
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Complex Detail View -->
+        <section id="complex" class="view">
+            <div class="detail-header">
+                <span class="card-tag">Bundle Distribution</span>
+                <h1>Complex OPA Deep Dive</h1>
+                <p class="explanation">Advanced distribution where policies are compiled into bundles and served
+                    centrally via an Nginx server.</p>
+            </div>
+            <div class="detail-grid">
+                <div>
+                    <div class="mermaid-container">
+                        <div class="mermaid">
+                            graph TD
+                            Admin[Policy Admin] -->|Push Rego| Git[Git Repo]
+                            Git -->|CI/CD| Bndl[Bundle Server]
+                            subgraph "Regional Cluster"
+                            Node[Node.js Svc] -->|Local Decision| Agent[OPA Agent]
+                            Agent -.->|Auto-Poll| Bndl
+                            end
+                        </div>
+                    </div>
+                    <div class="explanation">
+                        <h3>How it Works</h3>
+                        <p>OPA Agents are configured with a `config.yaml` to poll a remote endpoint every 10 seconds.
+                            Policies are served as `.tar.gz` bundles.</p>
+                        <h3>OPA Leverage</h3>
+                        <ul>
+                            <li><strong>Dynamic Global Updates:</strong> Update access rules across 1000s of services in
+                                seconds without a redeploy.</li>
+                            <li><strong>Data Decoupling:</strong> Bundles can also contain large data sets (JSON) for
+                                context-aware decisions.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <h3>Agent Config</h3>
+                    <div class="code-block">
+                        services:
+                        bundle-server:
+                        url: http://nginx:80
+                        bundles:
+                        authz:
+                        service: bundle-server
+                        resource: bundles/rbac.tar.gz
+                        polling:
+                        min_delay_seconds: 10
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
 
     <footer class="footer">
-        <p>&copy; 2026 OPA RBAC Samples Contributors. Optimized for Single-Screen Browsing.</p>
+        <p>&copy; 2026 OPA RBAC Samples. Technical Deep Dive Edition.</p>
     </footer>
 
     <script>
-        mermaid.initialize({
-            theme: 'dark',
-            startOnLoad: true,
-            securityLevel: 'loose',
-            fontFamily: 'Inter'
+        const routes = {
+            '#home': { id: 'home', title: 'Home' },
+            '#fastapi': { id: 'fastapi', title: 'FastAPI Deep Dive' },
+            '#simple': { id: 'simple', title: 'Simple OPA Deep Dive' },
+            '#complex': { id: 'complex', title: 'Complex OPA Deep Dive' }
+        };
+
+        function router() {
+            const hash = location.hash || '#home';
+            const route = routes[hash] || routes['#home'];
+
+            // Update Views
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(route.id).classList.add('active');
+
+            // Update Breadcrumbs
+            const bc = document.getElementById('breadcrumb');
+            bc.innerHTML = '<a href="#home">Home</a>';
+            if (hash !== '#home') {
+                bc.innerHTML += `<span>/</span> <strong>${route.title}</strong>`;
+            }
+
+            // Sync Mermaid
+            mermaid.init(undefined, document.querySelectorAll('.active .mermaid'));
+        }
+
+        window.addEventListener('hashchange', router);
+        window.addEventListener('load', () => {
+            mermaid.initialize({ theme: 'dark', startOnLoad: false });
+            router();
         });
     </script>
 </body>
